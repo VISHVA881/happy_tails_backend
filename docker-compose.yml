@@ -1,0 +1,36 @@
+x-common: &common
+  environment: &env
+    JWT_SECRET: change-this-secret-in-production
+    STAFF_CODE: happytails-staff
+    PET_URL: http://pet_service:8000
+    CATALOG_URL: http://catalog_service:8000
+    APPT_URL: http://appointment_service:8000
+    CUSTOMER_URL: http://customer_service:8000
+
+services:
+  auth_service:
+    build: ./auth_service
+    ports: ["8001:8000"]
+    <<: *common
+  customer_service:
+    build: ./customer_service
+    ports: ["8002:8000"]
+    <<: *common
+  pet_service:
+    build: ./pet_service
+    ports: ["8003:8000"]
+    <<: *common
+  catalog_service:
+    build: ./catalog_service
+    ports: ["8004:8000"]
+    <<: *common
+  appointment_service:
+    build: ./appointment_service
+    ports: ["8005:8000"]
+    <<: *common
+    depends_on: [pet_service, catalog_service]
+  report_service:
+    build: ./report_service
+    ports: ["8006:8000"]
+    <<: *common
+    depends_on: [appointment_service, customer_service, pet_service]
